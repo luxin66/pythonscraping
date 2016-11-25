@@ -1,0 +1,49 @@
+# coding:utf-8
+import requests
+import sys
+import re
+import pymysql
+from bs4 import BeautifulSoup
+
+
+s = requests.Session()
+res = s.get('https://ilearn.mq.edu.au')
+cookies = dict(res.cookies)
+
+myurl = "https://ilearn.mq.edu.au/login/index.php"
+s.headers.update({'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.87 Safari/537.36','Connection':'Keep-Alive','Referer':'http://ilearn.mq.edu.au/login/logout.php'})
+# headers = {'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+# 'Accept-Encoding':'gzip, deflate, sdch, br',
+# 'Accept-Language':'zh-CN,zh;q=0.8,nl;q=0.6',
+# 'Cache-Control':'max-age=0',
+# 'Connection':'keep-alive',
+# 'Host':'ilearn.mq.edu.au',
+# 'Referer':'http://ilearn.mq.edu.au/login/logout.php',
+# 'Upgrade-Insecure-Requests':'1',
+# 'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.87 Safari/537.36'}
+
+#myurl = "http://ilearn.mq.edu.au/mod/oublog/view.php?id=3589579&page=0"
+res = s.post(myurl, data = {'username':'44036515', 'password':'Ll123456'}, cookies=cookies)
+
+# res.encoding = 'utf-8'
+# #print(res. text)
+# soup = BeautifulSoup(res.text, "html.parser")
+
+blogUrls = ['http://ilearn.mq.edu.au/mod/oublog/view.php?id=3589579','http://ilearn.mq.edu.au/mod/oublog/view.php?id=3589742','http://ilearn.mq.edu.au/mod/oublog/view.php?id=3589748','http://ilearn.mq.edu.au/mod/oublog/view.php?id=3589745','http://ilearn.mq.edu.au/mod/oublog/view.php?id=3589752','http://ilearn.mq.edu.au/mod/oublog/view.php?id=3589754','http://ilearn.mq.edu.au/mod/oublog/view.php?id=3817818','http://ilearn.mq.edu.au/mod/oublog/view.php?id=3589761','http://ilearn.mq.edu.au/mod/oublog/view.php?id=3589764','http://ilearn.mq.edu.au/mod/oublog/view.php?id=3589784']
+for blogurl in blogUrls:
+	for myurlno in range(3):
+		pageUrl = blogurl + '&page=' +'%s'%(myurlno)
+		# pageUrl = 'http://ilearn.mq.edu.au/mod/oublog/view.php?id=3589579&page=1'
+		res =s.get(pageUrl, cookies=cookies)
+		res.encoding = 'utf-8'
+		soup = BeautifulSoup(res.text, "html.parser")
+
+		for string1 in soup.find(id='oublog-posts').strings:
+		    print(string1)
+		    # fileN = re.sub("\D", "", blogurl)
+		    # fileName = str(fileN) + str(myurlno)
+		    # fileObj = open(fileName, 'w')
+		    # fileObj.writelines(string1)
+		    # fileObj.close()
+
+
